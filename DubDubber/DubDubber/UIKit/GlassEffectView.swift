@@ -12,6 +12,8 @@ struct GlassEffectView: View {
     
     let configuration: GlassEffectConfiguration
     
+    let containerShape: AnyShape
+    
     let blackShadowColor: Color
     let whiteShadowColor: Color
     
@@ -20,15 +22,26 @@ struct GlassEffectView: View {
         
         let blackShadowColor1Base = GlassEffectConfiguration.FillType.primary.firstColor
         let blackShadowColor1Mixed = blackShadowColor1Base.mix(with: configuration.fillType.firstColor, by: configuration.borderColorMixRatio)
-        blackShadowColor = Color.blendedColor(foreground: Color.black, background: blackShadowColor1Mixed, alpha: 0.15)
+        blackShadowColor = Color.blendedColor(foreground: Color.black, background: blackShadowColor1Mixed, alpha: 0.1)
         
         let whiteShadowColorBase = GlassEffectConfiguration.FillType.primary.lastColor
         let whiteShadowColorBackground = whiteShadowColorBase.mix(with: configuration.fillType.lastColor, by: configuration.borderColorMixRatio)
         whiteShadowColor = Color.blendedColor(
             foreground: Color.white,
             background: whiteShadowColorBackground,
-            alpha: 0.33
+            alpha: 0.1
         )
+        
+        switch configuration.shapeStyle {
+        case .capsule:
+            containerShape = AnyShape(Capsule())
+        case .rectangle:
+            containerShape = AnyShape(Rectangle())
+        case .roundedRectangle(let radius, let type):
+            containerShape = AnyShape(RoundedRectangle(cornerRadius: radius, style: type))
+        case .custom(shape: let s):
+            containerShape = AnyShape(s.shape)
+        }
     }
     
     let linearGradient = LinearGradient(
@@ -52,15 +65,15 @@ extension GlassEffectView {
     }
     
     var lightEffect: some View {
-        configuration.containerShape
+        containerShape
             .fill(
                 configuration.material
-                
+                    
                     .shadow(
                         .inner(
                             color: whiteShadowColor,
                             radius: 1,
-                            x: -configuration.thickness.innerShadowOffset,
+                            x: -configuration.thickness.innerShadowOffset ,
                             y: -configuration.thickness.innerShadowOffset
                         )
                     )
@@ -75,7 +88,7 @@ extension GlassEffectView {
                     )
             )
             .background(
-                configuration.containerShape
+                containerShape
                     .fill(AnyShapeStyle(configuration.fillType.fillShape))
             )
     }
@@ -83,11 +96,11 @@ extension GlassEffectView {
     var darkEffect: some View {
         
         ZStack {
-            configuration.containerShape
+            containerShape
                 .fill(
                     configuration.material
                 )
-            configuration.containerShape
+            containerShape
                 .stroke(
                     linearGradient,
                     lineWidth: configuration.thickness.darkStrokeWidth)
@@ -176,22 +189,6 @@ struct GlassEffectConfiguration {
     }
 }
 
-extension GlassEffectConfiguration {
-    
-    var containerShape: some Shape {
-        switch shapeStyle {
-        case .capsule:
-            AnyShape(Capsule())
-        case .rectangle:
-            AnyShape(Rectangle())
-        case .roundedRectangle(let radius, let type):
-            AnyShape(RoundedRectangle(cornerRadius: radius, style: type))
-        case .custom(shape: let s):
-            AnyShape(s.shape)
-        }
-    }
-}
-
 
 //MARK: - FillType
 
@@ -277,13 +274,13 @@ extension GlassEffectConfiguration.Thickness {
     var innerShadowOffset: CGFloat {
         switch self {
         case .ultraThin:
-            return 1
+            return 1.2
         case .thin:
-            return 2
+            return 2.4
         case .regular:
-            return 3
+            return 3.6
         case .thick:
-            return 4
+            return 4.8
         }
     }
 }

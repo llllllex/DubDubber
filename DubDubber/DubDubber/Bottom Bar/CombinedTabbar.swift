@@ -165,6 +165,13 @@ extension CombinedTabbar {
                     }
                 }
         )
+        .background(alignment: .bottom) {
+            LinearGradient(colors: [
+                Color.clear,
+                Color.white
+            ], startPoint: UnitPoint(x: 0.5, y: 0), endPoint: UnitPoint(x: 0.5, y: 0.25))
+            .ignoresSafeArea()
+        }
     }
 }
 
