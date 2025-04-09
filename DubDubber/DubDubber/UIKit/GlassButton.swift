@@ -74,6 +74,8 @@ struct GlassButton: View {
     
     @State private var isHovering: Bool = false
     
+    @GestureState private var isDetectingLongPress = false
+    
     @Environment(\.colorScheme) var colorScheme
 }
 
@@ -151,18 +153,15 @@ extension GlassButton {
         )
         .simultaneousGesture(
             DragGesture(minimumDistance: 0)
-                .onChanged({ _ in
+                .onChanged { _ in
                     if self.isHovering == false {
                         self.isHovering = true
                         Haptic.shared.glassTouchDown()
                     }
-                })
-                .onEnded({ _ in
-                    if self.isHovering == true {
-                        self.isHovering = false
-//                        Haptic.shared.glassTouchUp()
-                    }
-                })
+                }
+                .onEnded { _ in
+                    self.isHovering = false
+                }
         )
         .frame(height: size.point)
     }
