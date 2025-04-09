@@ -10,9 +10,34 @@ import SwiftUI
 
 struct GlassEffectView: View {
     
-    @Environment(\.colorScheme) var colorScheme
-    
     let configuration: GlassEffectConfiguration
+    
+    let blackShadowColor: Color
+    let whiteShadowColor: Color
+    
+    init(configuration: GlassEffectConfiguration) {
+        self.configuration = configuration
+        
+        let blackShadowColor1Base = GlassEffectConfiguration.FillType.primary.firstColor
+        let blackShadowColor1Mixed = blackShadowColor1Base.mix(with: configuration.fillType.firstColor, by: configuration.borderColorMixRatio)
+        blackShadowColor = Color.blendedColor(foreground: Color.black, background: blackShadowColor1Mixed, alpha: 0.15)
+        
+        let whiteShadowColorBase = GlassEffectConfiguration.FillType.primary.lastColor
+        let whiteShadowColorBackground = whiteShadowColorBase.mix(with: configuration.fillType.lastColor, by: configuration.borderColorMixRatio)
+        whiteShadowColor = Color.blendedColor(
+            foreground: Color.white,
+            background: whiteShadowColorBackground,
+            alpha: 0.33
+        )
+    }
+    
+    let linearGradient = LinearGradient(
+        gradient: Gradient(colors: [Color(white: 0.3), Color(white: 0.1)]),
+        startPoint: .top,
+        endPoint: .bottomTrailing
+    )
+    
+    @Environment(\.colorScheme) var colorScheme
 }
 
 extension GlassEffectView {
@@ -27,115 +52,32 @@ extension GlassEffectView {
     }
     
     var lightEffect: some View {
-        ZStack {
-            configuration.containerShape
-                .fill(
-                    configuration.material
-                    
-//                        .shadow(
-//                            .inner(
-//                                color: .white.opacity(0.33),
-//                                radius: 1,
-//                                x: -3,
-//                                y: -3
-//                            )
-//                        )
-//                        .shadow(
-//                            .inner(
-//                                color: .white.opacity(0.33),
-//                                radius: thickness.innerWhiteShadowRadius,
-//                                x: -thickness.innerWhiteShadowOffset,
-//                                y: -thickness.innerWhiteShadowOffset
-//                            )
-//                        )
-//
-//                        .shadow(
-//                            .inner(
-//                                color: .black.opacity(0.15),
-//                                radius: 2,
-//                                x: thickness.innerBlackShadowOffset,
-//                                y: thickness.innerBlackShadowOffset
-//                            )
-//                        )
-//                        .shadow(
-//                            .inner(
-//                                color: .black.opacity(0.1),
-//                                radius: 2.0 * thickness.innerBlackShadowRadius,
-//                                x: thickness.innerBlackShadowOffset,
-//                                y: thickness.innerBlackShadowOffset
-//                            )
-//                        )
-                        .shadow(
-                            .inner(
-                                color: whiteShadowColor,
-                                radius: 1,
-                                x: -3,
-                                y: -3
-                            )
+        configuration.containerShape
+            .fill(
+                configuration.material
+                
+                    .shadow(
+                        .inner(
+                            color: whiteShadowColor,
+                            radius: 1,
+                            x: -configuration.thickness.innerShadowOffset,
+                            y: -configuration.thickness.innerShadowOffset
                         )
-                        .shadow(
-                            .inner(
-                                color: whiteShadowColor,
-                                radius: configuration.thickness.innerWhiteShadowRadius,
-                                x: -configuration.thickness.innerWhiteShadowOffset,
-                                y: -configuration.thickness.innerWhiteShadowOffset
-                            )
+                    )
+                
+                    .shadow(
+                        .inner(
+                            color: blackShadowColor,
+                            radius: 1,
+                            x: configuration.thickness.innerShadowOffset,
+                            y: configuration.thickness.innerShadowOffset
                         )
-                    
-                        .shadow(
-                            .inner(
-                                color: blackShadowColor1,
-                                radius: 2,
-                                x: configuration.thickness.innerBlackShadowOffset,
-                                y: configuration.thickness.innerBlackShadowOffset
-                            )
-                        )
-                        .shadow(
-                            .inner(
-                                color: blackShadowColor2,
-                                radius: 2.0 * configuration.thickness.innerBlackShadowRadius,
-                                x: configuration.thickness.innerBlackShadowOffset,
-                                y: configuration.thickness.innerBlackShadowOffset
-                            )
-                        )
-                )
-                .background(
-                    configuration.containerShape
-                        .fill(AnyShapeStyle(configuration.fillType.fillShape))
-                )
-            
-        // 投影
-//            .shadow(
-//                color: .purple
-//                    .mix(with: .blue, by: 0.5)
-//                    .mix(with: .black, by: 0.5)
-//                    .opacity(0.1),
-//                radius: 4,
-//                x: 4,
-//                y: 4
-//            )
-            
-            strokeBorder
-        }
-    }
-    
-    @ViewBuilder
-    var strokeBorder: some View {
-        if self.configuration.shapeStyle == GlassEffectConfiguration.Shapes.rectangle {
-            configuration.containerShape
-                .stroke(
-                    Color(white: 0.9175),
-                    lineWidth: configuration.thickness.strockWidth)
-                .offset(x: -configuration.thickness.strockOffset, y: -configuration.thickness.strockOffset)
-                .clipShape(configuration.containerShape)
-        } else {
-            configuration.containerShape
-                .stroke(
-                    Color(white: 0.96),
-                    lineWidth: configuration.thickness.strockWidth)
-                .offset(x: -configuration.thickness.strockOffset, y: -configuration.thickness.strockOffset)
-                .clipShape(configuration.containerShape)
-        }
+                    )
+            )
+            .background(
+                configuration.containerShape
+                    .fill(AnyShapeStyle(configuration.fillType.fillShape))
+            )
     }
     
     var darkEffect: some View {
@@ -151,61 +93,6 @@ extension GlassEffectView {
                     lineWidth: configuration.thickness.darkStrokeWidth)
         }
     }
-    
-    var linearGradient: some ShapeStyle {
-        LinearGradient(
-            gradient: Gradient(colors: [Color(white: 0.3), Color(white: 0.1)]),
-            startPoint: .top,
-            endPoint: .bottomTrailing
-        )
-    }
-    
-    var blackShadowColor2: Color {
-//        Color.blendedColor(foreground: Color.black, background: configuration.firstColor, alpha: 0.1)
-        let base = GlassEffectConfiguration.FillType.primary.firstColor
-        let mixed = base.mix(with: configuration.fillType.firstColor, by: configuration.borderColorMixRatio)
-        return Color.blendedColor(foreground: Color.black, background: mixed, alpha: 0.1)
-    }
-    
-    var blackShadowColor1: Color {
-//        Color.blendedColor(foreground: Color.black, background: configuration.firstColor, alpha: 0.15)
-        let base = GlassEffectConfiguration.FillType.primary.firstColor
-        let mixed = base.mix(with: configuration.fillType.firstColor, by: configuration.borderColorMixRatio)
-        return Color.blendedColor(foreground: Color.black, background: mixed, alpha: 0.15)
-    }
-    
-    var whiteShadowColor: Color {
-//        Color.blendedColor(foreground: Color.white, background: configuration.lastColor, alpha: 0.33)
-        let base = GlassEffectConfiguration.FillType.primary.lastColor
-        let mixed = base.mix(with: configuration.fillType.lastColor, by: configuration.borderColorMixRatio)
-        return Color.blendedColor(
-            foreground: Color.white,
-            background: mixed,
-            alpha: 0.33
-        )
-    }
-}
-
-
-//MARK: - Transient
-
-private extension GlassEffectView {
-    
-    var shadowOpacity: CGFloat {
-        colorScheme == .light ? 0.1 : 0
-    }
-    
-    var shadowRadius: CGFloat {
-        colorScheme == .light ? 4 : 0
-    }
-    
-    var innerShadowColor: Color {
-        colorScheme == .light ? .white : .black
-    }
-    
-    var innerShadowColor2: Color {
-        colorScheme == .light ? .black : .white
-    }
 }
 
 
@@ -213,12 +100,11 @@ private extension GlassEffectView {
 
 struct GlassEffectConfiguration {
     
-    /// 填充类型
     enum FillType {
         case solid(Color)
-        /// 暂时固定角度
+        /// temporarily limit parameters
         case linearGradient([Color])
-        //TODO: 暂时不支持，短期内无使用需求
+        //TODO:
 //        case radialGradient(RadialGradient)
 //        case image(Image)
 //        case custom((CGSize) -> any View)
@@ -375,22 +261,6 @@ extension GlassEffectConfiguration.FillType {
 
 extension GlassEffectConfiguration.Thickness {
     
-    @MainActor
-    var strockWidth: CGFloat {
-//        switch self {
-//        case .ultraThin:
-//            return 0
-//        case .thin:
-//            return 1
-//        case .regular:
-//            return 1.5
-//        case .thick:
-//            return 2
-//        }
-        
-        1.0 / UIScreen.main.scale
-    }
-    
     var darkStrokeWidth: CGFloat {
         switch self {
         case .ultraThin:
@@ -404,59 +274,7 @@ extension GlassEffectConfiguration.Thickness {
         }
     }
     
-    var strockOffset: CGFloat {
-        switch self {
-        case .ultraThin:
-            return 0
-        case .thin:
-            return 2
-        case .regular:
-            return 3
-        case .thick:
-            return 4
-        }
-    }
-    
-    var innerWhiteShadowOffset: CGFloat {
-        switch self {
-        case .ultraThin:
-            return 1
-        case .thin:
-            return 2
-        case .regular:
-            return 3
-        case .thick:
-            return 4
-        }
-    }
-    
-    var innerWhiteShadowRadius: CGFloat {
-        switch self {
-        case .ultraThin:
-            return 1
-        case .thin:
-            return 2
-        case .regular:
-            return 3
-        case .thick:
-            return 4
-        }
-    }
-    
-    var innerBlackShadowOffset: CGFloat {
-        switch self {
-        case .ultraThin:
-            return 1
-        case .thin:
-            return 2
-        case .regular:
-            return 3
-        case .thick:
-            return 4
-        }
-    }
-    
-    var innerBlackShadowRadius: CGFloat {
+    var innerShadowOffset: CGFloat {
         switch self {
         case .ultraThin:
             return 1
