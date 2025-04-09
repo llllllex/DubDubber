@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>UIAppFonts</key>
+	<array>
+		<string>MapleMono-NF-CN-Bold.ttf</string>
+		<string>MapleMono-NF-CN-BoldItalic.ttf</string>
+		<string>MapleMono-NF-CN-ExtraBold.ttf</string>
+		<string>MapleMono-NF-CN-ExtraBoldItalic.ttf</string>
+		<string>MapleMono-NF-CN-ExtraLight.ttf</string>
+		<string>MapleMono-NF-CN-ExtraLightItalic.ttf</string>
+		<string>MapleMono-NF-CN-Italic.ttf</string>
+		<string>MapleMono-NF-CN-Light.ttf</string>
+		<string>MapleMono-NF-CN-LightItalic.ttf</string>
+		<string>MapleMono-NF-CN-Medium.ttf</string>
+		<string>MapleMono-NF-CN-MediumItalic.ttf</string>
+		<string>MapleMono-NF-CN-Regular.ttf</string>
+		<string>MapleMono-NF-CN-SemiBold.ttf</string>
+		<string>MapleMono-NF-CN-SemiBoldItalic.ttf</string>
+		<string>MapleMono-NF-CN-Thin.ttf</string>
+		<string>MapleMono-NF-CN-ThinItalic.ttf</string>
+	</array>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
+</dict>
+</plist>

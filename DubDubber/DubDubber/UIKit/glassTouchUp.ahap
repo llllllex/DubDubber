@@ -1,0 +1,40 @@
+{
+    "Version": 1.0,
+    "Metadata":
+        {
+            "Project" : "HapticLex",
+            "Created" : "29 Mar 2025",
+            "Description" : "Effect for the glass touched up."
+        },
+    "Pattern":
+    [
+        {
+            "Event":
+            {
+                "Time": 0.0,
+                "EventType": "HapticTransient",
+                "EventParameters":
+                [
+                    { "ParameterID": "HapticIntensity", "ParameterValue": 0.5 },
+                    { "ParameterID": "HapticSharpness", "ParameterValue": 1.0 },
+                    { "ParameterID": "HapticAttackTime", "ParameterValue": 0.0 },
+                    { "ParameterID": "HapticDecayTime", "ParameterValue": 0.0 },
+                    { "ParameterID": "HapticSustained", "ParameterValue": 0.0 },
+                    { "ParameterID": "HapticReleaseTime", "ParameterValue": 0.0 }
+                ]
+            }
+        },
+        {
+            "Event":
+            {
+                "Time":0.0,
+                "EventType":"AudioCustom",
+                "EventWaveformPath":"glassTouchUp.wav",
+                "EventParameters":
+                [
+                    {"ParameterID":"AudioVolume","ParameterValue":1.0}
+                ]
+            }
+        }
+    ]
+}
